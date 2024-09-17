@@ -4,7 +4,7 @@ import { serveStatic } from 'frog/serve-static';
 import { handle } from 'frog/vercel';
 
 // Replace with your Neynar API Key
-const NEYNAR_API_KEY = 'YOUR_API_KEY';  // Replace with your actual API key
+const NEYNAR_API_KEY = 'Y63FC33FA-82AF-466A-B548-B3D906ED2314';  // Replace with your actual API key
 
 // Function to validate user actions using Neynar's /frame/validate API
 const validateUserActions = async (userFid: string, messageHash: string) => {
