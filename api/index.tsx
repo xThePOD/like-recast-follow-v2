@@ -5,7 +5,7 @@ import { handle } from 'frog/vercel';
 
 // Replace with your Neynar API Key
 const NEYNAR_API_KEY = '63FC33FA-82AF-466A-B548-B3D906ED2314';
-const TARGET_CAST_HASH = 'CAST_HASH'; // The hash of the cast to check for likes and recasts
+const TARGET_CAST_HASH = '0xd4c6ef7ed8658d8aea81def620e7698180f25aa7'; // The hash of the cast to check for likes and recasts
 const TARGET_FID = '791835'; // Your FID to check if the user follows you
 
 // Function to check if the user has liked, recasted, and followed you
