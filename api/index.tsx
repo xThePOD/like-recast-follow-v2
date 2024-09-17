@@ -20,7 +20,7 @@ const validateUserActions = async (userFid: string, messageHash: string) => {
   };
 
   try {
-    const response = await fetch('https://api.neynar.com/v1/farcaster/validate-frame', {
+    const response = await fetch('https://api.neynar.com/v2/farcaster/validate-frame', { // Updated endpoint
       method: 'POST',
       headers,
       body: JSON.stringify(body),
@@ -97,7 +97,7 @@ app.frame('/', async (c) => {
         link: '', // Optional URL if you want to add a link
       };
 
-      // Return the message response wrapped in a Response object
+      // Return the message response in a JSON object with 200 OK status
       return new Response(JSON.stringify(messageResponse), {
         headers: { 'Content-Type': 'application/json' },
         status: 200,
