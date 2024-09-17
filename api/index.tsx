@@ -4,23 +4,25 @@ import { serveStatic } from 'frog/serve-static';
 import { handle } from 'frog/vercel';
 
 // Replace with your Neynar API Key
-const NEYNAR_API_KEY = '63FC33FA-82AF-466A-B548-B3D906ED2314';
+const NEYNAR_API_KEY = 'YOUR_API_KEY';  // Replace with your actual API key
 
-// Function to validate user actions using Neynar's validate-frame API
+// Function to validate user actions using Neynar's /frame/validate API
 const validateUserActions = async (userFid: string, messageHash: string) => {
   const headers = {
     'accept': 'application/json',
-    'api_key': NEYNAR_API_KEY,
+    'api_key': NEYNAR_API_KEY,  // Use your actual API key
+    'content-type': 'application/json',
   };
 
   const body = {
-    fid: userFid,
-    message_bytes: messageHash,
-    context_flags: ['cast_reaction', 'follow'],
+    cast_reaction_context: true,  // Checking for like/reaction
+    follow_context: true,  // Checking if the user follows
+    signer_context: false,  // Not using signer context
+    channel_follow_context: false  // Not checking channel follow
   };
 
   try {
-    const response = await fetch('https://api.neynar.com/v2/farcaster/validate-frame', { // Updated endpoint
+    const response = await fetch('https://api.neynar.com/v2/farcaster/frame/validate', {
       method: 'POST',
       headers,
       body: JSON.stringify(body),
@@ -34,8 +36,9 @@ const validateUserActions = async (userFid: string, messageHash: string) => {
 
     const data = await response.json();
     
-    const hasLiked = data.context_flags.cast_reaction;
-    const isFollowing = data.context_flags.follow;
+    // Assuming the response contains the contexts
+    const hasLiked = data.cast_reaction_context;
+    const isFollowing = data.follow_context;
     
     return { hasLiked, isFollowing };
   } catch (error) {
@@ -68,11 +71,11 @@ app.frame('/', async (c) => {
     });
   }
 
-  // Get user FID and message hash from the context
+  // Get user FID and message hash from the context (c.frameData)
   const userFid = c.frameData?.fid;
-  const messageHash = c.frameData?.messageHash; // Use messageHash instead of messageBytes
+  const messageHash = c.frameData?.messageHash;
 
-  // Handle missing data
+  // Ensure these values exist before proceeding
   if (!userFid || !messageHash) {
     return c.res({
       image: (
@@ -86,7 +89,7 @@ app.frame('/', async (c) => {
   }
 
   try {
-    // Validate user actions using Neynar's validate-frame API
+    // Using the variables userFid and messageHash inside validateUserActions
     const { hasLiked, isFollowing } = await validateUserActions(userFid.toString(), messageHash);
 
     // If the user hasn't completed all actions, return a JSON response as a valid HTTP response
